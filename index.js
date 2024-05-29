@@ -1,7 +1,8 @@
-// import the pets array from data.js
+// index.js
+// Import the pets array from data.js
 const pets = require('./data');
 
-// init express app
+// Init express app
 const express = require('express');
 const app = express();
 
@@ -9,47 +10,44 @@ const PORT = 8080;
 
 // GET - / - returns homepage
 app.get('/', (req, res) => {
-    // serve up the public folder as static index.html file
-
+    res.sendFile(__dirname + '/public/index.html');
 });
 
-// hello world route
+// Hello world route
 app.get('/api', (req, res) => {
     res.send('Hello World!');
 });
 
-// get all pets from the database
+// Get all pets from the database
 app.get('/api/v1/pets', (req, res) => {
-    // send the pets array as a response
-
+    res.json(pets);
 });
 
-// get pet by owner with query string
+// Get pet by owner with query string
 app.get('/api/v1/pets/owner', (req, res) => {
-    // get the owner from the request
-
-
-    // find the pet in the pets array
+    const owner = req.query.owner;
+    if (!owner) {
+        return res.status(400).send('Owner query parameter is required');
+    }
     const pet = pets.find(pet => pet.owner === owner);
-
-    // send the pet as a response
-
+    if (!pet) {
+        return res.status(404).send('Pet not found');
+    }
+    res.json(pet);
 });
 
-// get pet by name
+// Get pet by name
 app.get('/api/v1/pets/:name', (req, res) => {
-    // get the name from the request
-
-
-    // find the pet in the pets array
+    const name = req.params.name;
     const pet = pets.find(pet => pet.name === name);
-
-    // send the pet as a response
-
+    if (!pet) {
+        return res.status(404).send('Pet not found');
+    }
+    res.json(pet);
 });
 
 app.listen(PORT, () => {
-    console.log('Server is listening on port ' + PORT);
+    console.log(`Server is listening on port ${PORT}`);
 });
 
 module.exports = app;
