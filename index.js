@@ -1,16 +1,17 @@
-// index.js
-// Import the pets array from data.js
-const pets = require('./data');
-
-// Init express app
 const express = require('express');
-const app = express();
+const cors = require('cors');
+const pets = require('./data');
+const path = require('path');
 
-const PORT = 8080;
+const app = express();
+const PORT = 3000;
+
+// Enable CORS
+app.use(cors());
 
 // GET - / - returns homepage
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html');
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Hello world route
